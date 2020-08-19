@@ -9,44 +9,54 @@ from werkzeug.utils import secure_filename
 
 from brewapp import app, manager, socketio
 
-from . import config, model
-from .buzzer import nextStepBeep, resetBeep, timerBeep
-from .model import *
-from .util import *
-from .views import base
+from brewapp.base import config, model
+from brewapp.base.buzzer import nextStepBeep, resetBeep, timerBeep
+from brewapp.base.model import Step
+from brewapp.base.util import *
+from brewapp.base.views import base
 
 
 @app.route('/api/step/order', methods=['POST'])
 def order_steps():
     data = request.get_json()
-
     steps =  Step.query.all()
     for s in steps:
         s.order = data[str(s.id)]
         db.session.add(s)
         db.session.commit()
-    return ('',204)
+    return ('', 204)
+
 
 @app.route('/api/step/clear', methods=['POST'])
 def getBrews():
     Step.query.delete()
     db.session.commit()
-    return ('',204)
+    return ('', 204)
+
 
 @socketio.on('start', namespace='/brew')
 def startStep(*kwargs):
     nextStep()
 
+
 @socketio.on('next', namespace='/brew')
 def nextStep2():
     nextStep()
+
 
 def nextStep():
     active = Step.query.filter_by(state='A').first()
     inactive = Step.query.filter_by(state='I').order_by(Step.order).first()
 
     if(inactive == None):
-        socketio.emit('message', {"headline": "BREWING_FINISHED", "message": "BREWING_FINISHED_MESSAGE"}, namespace ='/brew')
+        socketio.emit(
+            'message',
+            {
+                "headline": "BREWING_FINISHED",
+                "message": "BREWING_FINISHED_MESSAGE"
+            },
+            namespace ='/brew'
+        )
 
     if(active != None):
         active.state = 'D'
@@ -74,7 +84,6 @@ def nextStep():
 def reset():
     app.brewapp_current_step  = None
     resetSteps()
-
 
 
 ## Methods
@@ -137,8 +146,15 @@ def post_get(result=None,**kw):
 @brewinit()
 def init():
     ## REST API FOR STEP
-    manager.create_api(Step, methods=['GET', 'POST', 'DELETE', 'PUT'],allow_patch_many=True, results_per_page=None, postprocessors=
-    {'GET_MANY': [post_get]})
+    manager.create_api(
+        Step,
+        methods=['GET', 'POST', 'DELETE', 'PUT'],
+        allow_patch_many=True,
+        results_per_page=None,
+        postprocessors={
+            'GET_MANY': [post_get]
+        }
+    )
     s = Step.query.filter_by(state='A').first()
     if(s != None):
         app.brewapp_current_step = to_dict(s)
@@ -148,8 +164,6 @@ def init():
 
 @brewjob(key="stepjob", interval=0.1)
 def stepjob():
-
-
     ## Skip if no step is active
     if(app.brewapp_current_step == None):
         return

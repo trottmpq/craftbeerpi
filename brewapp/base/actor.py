@@ -3,14 +3,14 @@ import json
 from flask_restless.helpers import to_dict
 
 from brewapp import app, manager, socketio
-
-from .model import *
-from .util import *
+from brewapp.base.model import Hardware, Hydrometer
+from brewapp.base.util import brewinit, brewjob, nocache
 
 
 @app.route('/api/hardware/devices', methods=['GET'])
 def getHardwareDevices():
     return  json.dumps(app.brewapp_hardware.getDevices())
+
 
 @app.route('/api/hardware/state', methods=['GET'])
 def pumpstate():
@@ -18,21 +18,22 @@ def pumpstate():
 
 
 def pre_post(data, **kw):
-    if(data["config"] != None):
+    if data["config"]:
         data["config"] = json.dumps(data["config"])
 
+
 def post_post(result=None, **kw):
-    if(result["config"] != None):
+    if result["config"]:
         result["config"] = json.loads(result["config"])
     initHardware()
 
 def post_get_single(result=None, **kw):
-    if(result["config"] != None):
+    if result["config"]:
         result["config"] = json.loads(result["config"])
 
 def post_get_many(result, **kw):
     for o in result["objects"]:
-        if(o["config"] != None):
+        if o["config"]:
             o["config"] = json.loads(o["config"])
 
 def post_delete(**kw):
@@ -46,36 +47,36 @@ def init2():
 
 @brewinit()
 def init():
-    manager.create_api(Hardware, methods=['GET', 'POST', 'DELETE', 'PUT'], results_per_page=None,
-    preprocessors={
-        'POST': [pre_post],
-        'PATCH_SINGLE': [pre_post]},
-    postprocessors={
-        'POST': [post_post],
-        'GET_MANY': [post_get_many],
-        'GET_SINGLE': [post_get_single],
-        'PATCH_SINGLE': [post_post],
-        'DELETE_SINGLE': [post_delete]
-    })
+    manager.create_api(
+        Hardware,
+        methods=['GET', 'POST', 'DELETE', 'PUT'],
+        results_per_page=None,
+        preprocessors={
+            'POST': [pre_post],
+            'PATCH_SINGLE': [pre_post]
+        },
+        postprocessors={
+            'POST': [post_post],
+            'GET_MANY': [post_get_many],
+            'GET_SINGLE': [post_get_single],
+            'PATCH_SINGLE': [post_post],
+            'DELETE_SINGLE': [post_delete]
+        }
+    )
     initHardware(False)
 
 
-
-def initHardware(cleanup = True):
-
+def initHardware(cleanup=True):
     app.brewapp_switch_state = {}
     app.brewapp_hardware_config = {}
     app.brewapp_thermometer_cfg = {}
     app.brewapp_hydrometer_cfg = {}
     hw = Hardware.query.all()
 
-
     for h in hw:
         h1 = to_dict(h)
-
-        if(h1['config'] != None):
+        if h1['config']:
             h1['config'] = json.loads(h1['config'])
-
             if(h1["type"] == "T"):
                 app.brewapp_thermometer_cfg[h1["id"]] = h1
             elif (h1["type"] == "S"):
@@ -97,26 +98,38 @@ def initHardware(cleanup = True):
 def switchstate():
     return json.dumps(app.brewapp_switch_state)
 
+
 @socketio.on('switch', namespace='/brew')
 def ws_switch(data):
     s = int(data["switch"])
-
-    if(app.brewapp_switch_state.get(s, None) == None):
-        socketio.emit('message', {"headline": "HARDWARE_ERROR", "message": "PLEASE_CHECK_YOUR_HARDWARE_CONFIG"},
-                      namespace='/brew')
-
+    if not app.brewapp_switch_state.get(s, None):
+        socketio.emit(
+            'message',
+            {
+                "headline": "HARDWARE_ERROR",
+                "message": "PLEASE_CHECK_YOUR_HARDWARE_CONFIG"
+            },
+            namespace='/brew'
+        )
         return
 
-    if(app.brewapp_hardware_config[s]["config"].get("switch", None) is None):
-        socketio.emit('message', {"headline": "HARDWARE_ERROR", "message": "PLEASE_CHECK_YOUR_HARDWARE_CONFIG"}, namespace='/brew')
+    if not app.brewapp_hardware_config[s]["config"].get("switch", None):
+        socketio.emit(
+            'message',
+            {
+                "headline": "HARDWARE_ERROR",
+                "message": "PLEASE_CHECK_YOUR_HARDWARE_CONFIG"
+            },
+            namespace='/brew'
+        )
         return
 
-    if(app.brewapp_switch_state[s] == True):
-        app.logger.info("Switch off: " + str(s))
+    if app.brewapp_switch_state[s] == True:
+        app.logger.info(f"Switch off: {s}")
         app.brewapp_hardware.switchOFF(str(s));
         app.brewapp_switch_state[s] = False
     else:
-        app.logger.info("Switch on: " + str(s))
+        app.logger.info(f"Switch on: {s}")
         app.brewapp_hardware.switchON(str(s));
         app.brewapp_switch_state[s] = True
 
@@ -134,15 +147,13 @@ def switch_on_for_seconds(data):
     seconds = int(data["seconds"])
     id = int(data["switch"])
     t = socketio.start_background_task(run_for_seconds, id, seconds)
-    pass
-
-
 
 
 def switchOn(s):
     app.brewapp_hardware.switchON(s);
     app.brewapp_switch_state[int(s)]  = True
     socketio.emit('switch_state_update', app.brewapp_switch_state, namespace ='/brew')
+
 
 def switchOff(s):
     app.brewapp_hardware.switchOFF(s);
@@ -151,7 +162,6 @@ def switchOff(s):
 
 
 class ActorBase(object):
-
     state = False
 
     def init(self):
@@ -178,7 +188,6 @@ class ActorBase(object):
 
     def switchON(self, device):
         app.logger.info("GPIO ON" + str(device))
-
 
     def switchOFF(self, device):
         app.logger.info("GPIO OFF" + str(device))

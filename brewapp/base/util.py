@@ -1,26 +1,31 @@
-from brewapp import app, db
-from flask_restless.helpers import to_dict
+import csv
 import datetime
-import time
-from flask import  json
 import os.path
+import time
+from functools import update_wrapper, wraps
 
-def getAsArray(obj, order = None):
-    if order is not None :
-        result =obj.query.order_by(order).all()
+from flask import json, make_response
+from flask_restless.helpers import to_dict
+
+from brewapp import app, db
+
+
+def getAsArray(obj, order=None):
+    if order:
+        result = obj.query.order_by(order).all()
     else:
-        result =obj.query.all()
+        result = obj.query.all()
     ar = []
     for t in result:
         ar.append(to_dict(t))
     return ar
 
 
-def getAsDict(obj, key, deep=None, order = None):
-    if order is not None :
+def getAsDict(obj, key, deep=None, order=None):
+    if order:
         result = obj.query.order_by(order).all()
     else:
-        result =obj.query.all()
+        result = obj.query.all()
     ar = {}
     for t in result:
         ar[getattr(t, key)] = to_dict(t, deep=deep)
@@ -28,10 +33,9 @@ def getAsDict(obj, key, deep=None, order = None):
 
 
 def setTargetTemp(kettleid, temp):
-    if kettleid is None:
-        return
-    if app.brewapp_target_temp_method is not None:
-        app.brewapp_target_temp_method(kettleid, temp)
+    if kettleid:
+        if app.brewapp_target_temp_method is not None:
+            app.brewapp_target_temp_method(kettleid, temp)
 
 
 # Job Annotaiton
@@ -39,19 +43,35 @@ def setTargetTemp(kettleid, temp):
 # interval = interval in which the method is invoedk
 def brewjob(key, interval, config_parameter = None):
     def real_decorator(function):
-        app.brewapp_jobs.append({"function": function, "key": key, "interval": interval, "config_parameter": config_parameter})
+        app.brewapp_jobs.append(
+            {
+                "function": function,
+                "key": key,
+                "interval": interval,
+                "config_parameter": config_parameter
+            }
+        )
         def wrapper(*args, **kwargs):
             function(*args, **kwargs)
+
         return wrapper
+
     return real_decorator
 
 
 # Init Annotaiton
 def brewinit(order = 0, config_parameter = None):
     def real_decorator(function):
-        app.brewapp_init.append({"function": function, "order": order, "config_parameter": config_parameter})
+        app.brewapp_init.append(
+            {
+                "function": function,
+                "order": order,
+                "config_parameter": config_parameter
+            }
+        )
         def wrapper(*args, **kwargs):
             function(*args, **kwargs)
+
         return wrapper
 
     return real_decorator
@@ -62,11 +82,11 @@ def config(name):
         def wrapper(*args, **kwargs):
             if(app.brewapp_config.get(name, 'No') == 'Yes'):
                 function(*args, **kwargs)
-            else:
-                pass
+
         return wrapper
 
     return real_decorator
+
 
 def brewautomatic():
     def real_decorator(function):
@@ -77,6 +97,7 @@ def brewautomatic():
 
     return real_decorator
 
+
 def controllerLogic():
     def real_decorator(function):
         app.brewapp_controller[function.__name__] = function
@@ -85,6 +106,7 @@ def controllerLogic():
         return wrapper
 
     return real_decorator
+
 
 def timing(f):
     def wrap(*args):
@@ -95,8 +117,9 @@ def timing(f):
         return ret
     return wrap
 
+
 def writeTempToFile(file, timestamp, current_temp, target_temp):
-    filename = "log/" + file + ".templog"
+    filename = f"log/{file}.templog"
     '''
 
     if os.path.isfile(filename) == False:
@@ -110,8 +133,9 @@ def writeTempToFile(file, timestamp, current_temp, target_temp):
     with open(filename, "a") as myfile:
         myfile.write(msg)
 
+
 def writeSpindle(file, timestamp, current_temp, wort, battery):
-    filename = "log/" + file + ".templog"
+    filename = f"log/{file}.templog"
 
     '''
     if os.path.isfile(filename) == False:
@@ -124,12 +148,12 @@ def writeSpindle(file, timestamp, current_temp, wort, battery):
     with open(filename, "a") as myfile:
         myfile.write(msg)
 
+
 def read_hydrometer_log(file):
 
     if os.path.isfile(file) == False:
         return
 
-    import csv
     array = {"hydrometer_temp": [], "wort": [], "battery": []}
 
     with open(file, 'rb') as f:
@@ -144,7 +168,6 @@ def read_hydrometer_log(file):
 
 
 def read_temp_log(file):
-    import csv
     result = {"temp": [], "target_temp": []}
 
     if os.path.isfile(file) == False:
@@ -165,8 +188,6 @@ def delete_file(file):
 
         os.remove(file)
 
-from flask import make_response
-from functools import wraps, update_wrapper
 
 def updateModel(model, id, json):
     m = model.query.get(id)
@@ -174,12 +195,14 @@ def updateModel(model, id, json):
     db.session.commit()
     return to_dict(m)
 
+
 def createModel(model, json):
     m = model()
     m.decodeJson(json)
     db.session.add(m)
     db.session.commit()
     return to_dict(m)
+
 
 def deleteModel(model, id):
     try:

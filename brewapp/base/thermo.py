@@ -1,11 +1,9 @@
-import csv
 import datetime
-import os
-from datetime import date
 from io import StringIO
 
-from flask import make_response, request, send_from_directory
+from flask import send_from_directory
 
+from brewapp import app
 from brewapp.base.actor import *
 
 app.brewapp_thermometers = {}
@@ -35,36 +33,35 @@ def getAllLastTempLog():
 def getLastTempLog(id):
     return json.dumps(app.brewapp_thermometer_last[id])
 
+
 @brewjob(key="readtemp", interval=5)
 def readTemp():
     timestamp = int((datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).total_seconds())*1000
     temps = {}
 
     for t in app.brewapp_thermometer_cfg:
-
         tid = app.brewapp_thermometer_cfg[t]
 
         if tid["config"]["thermometer"]["id"] in app.brewapp_thermometer.getSensors():
-
             # Read Temp
             temp = app.brewapp_thermometer.readTemp(tid["config"]["thermometer"]["id"])
-
             if temp is None:
                 return
+
             # UNIT
-
-
-
             if app.brewapp_config.get("UNIT", "C") == "F":
                 temp = float(format(9.0/5.0 * temp + 32, '.2f'))
+
             # OFFSET
             if app.brewapp_thermometer_cfg[t]["config"]["thermometer"]["offset"] is not None:
                 temp = float(format(temp + float(app.brewapp_thermometer_cfg[t]["config"]["thermometer"]["offset"]), '.2f'))
             else:
                 temp = float(format(temp, '.2f'))
+
             # Init array if not present
             if app.brewapp_thermometers_log.get(t, None) is None:
                 app.brewapp_thermometers_log[t] = []
+
             # save data
             app.brewapp_thermometers_log[t] += [[timestamp, temp ]]
             app.brewapp_thermometer_last[t] = temp
@@ -82,39 +79,28 @@ def temp_chart(type, id):
     #return send_from_directory('../log', type + '_' + str(id) + '.templog'"", as_attachment=True, attachment_filename="Temp.log")
 
     id = int(id)
-
-
     name = "---"
 
     if type == "K":
-
         name = app.brewapp_kettle_state[id].get("name", "---")
     if type == "F":
         name = app.cbp['FERMENTERS'][id].get("name", "---")
 
     result = {"name": name, "data": read_temp_log('./log/' + type + '_' + str(id) + '.templog')}
 
-
     if type == 'F':
         hydrometer_id = app.cbp['FERMENTERS'][id].get("hydrometerid", None)
-
         if hydrometer_id is not None:
-
             hydrmeter_data = read_hydrometer_log('./log/S_' + str(hydrometer_id) + '.templog')
-
             if hydrmeter_data is not None:
                 result["data"].update(hydrmeter_data)
 
     return json.dumps(result)
 
 
-
-
 @app.route('/api/temp/<type>/<id>/chart', methods=["DELETE"])
 def delete_temp_file(type, id):
     id = int(id)
-
-    import os
     if type == "F":
         hydrometer_id = app.cbp['FERMENTERS'][id].get("hydrometerid", None)
         if hydrometer_id is not None:

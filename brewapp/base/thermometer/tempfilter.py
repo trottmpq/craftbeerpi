@@ -3,7 +3,6 @@ from collections import deque
 
 
 class TemperatureFilter(object):
-
     def __init__(self, maxViableDeviation=4):
         self._logger = logging.getLogger(type(self).__name__)
         self._deque = deque(maxlen=5)
@@ -15,9 +14,9 @@ class TemperatureFilter(object):
         median = sorted(self._deque)[len(self._deque)//2]
         deviation = abs(median - temperature)
 
-        self._logger.debug("deq: " + str(self._deque))
-        self._logger.debug("med: " + str(median))
-        self._logger.debug("dev: " + str(deviation))
+        self._logger.debug(f"deq: {self._deque}")
+        self._logger.debug(f"med: {median}")
+        self._logger.debug(f"dev: {deviation}")
 
         if deviation > self._maxViableDeviation:
             return self._lastKnownGood

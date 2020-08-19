@@ -2,8 +2,9 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 from brewapp import app, db
-
-from .model import *
+from brewapp.base.model import (Config, Fermenter, FermenterStep, Hardware,
+                                Hydrometer, Kettle, RecipeBooks,
+                                RecipeBookSteps, Step)
 
 admin = Admin(app)
 admin.add_view(ModelView(Step, db.session))

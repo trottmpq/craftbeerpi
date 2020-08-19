@@ -3,15 +3,15 @@ import json
 import yaml
 
 from brewapp import app, manager, socketio
-from brewapp.base.devices import *
-from brewapp.base.thermometer import *
-
-from .model import *
-from .util import *
+from brewapp.base.devices import (chip_gpio, dummygpio, gembird, gpio, gpiosys,
+                                  piface, wifisocket)
+from brewapp.base.model import Config
+from brewapp.base.thermometer import (dummy_thermometer, usb_thermometer,
+                                      w1_thermometer, w1_thermometer2)
+from brewapp.base.util import brewinit
 
 
 def pre_post(data, **kw):
-
     if data["type"] == "json":
         data["value"] = json.dumps(data["value"])
 
@@ -37,10 +37,12 @@ def readConfig():
     for c in config:
         app.brewapp_config[c.name] = c.value
 
+
 @brewinit(-1001)
 def initConfig():
     if (app.createdb is False):
         return
+
     with open("config/config.yaml", 'r') as stream:
         try:
             y = yaml.load(stream)
@@ -49,29 +51,44 @@ def initConfig():
                 if opts is not None:
                     opts = ",".join(opts)
 
-                db.session.add(Config(name=k, value=y[k].get("value", None), type=y[k].get("type", None), description=y[k].get("description", None), options=opts))
+                db.session.add(
+                    Config(
+                        name=k,
+                        value=y[k].get("value", None),
+                        type=y[k].get("type", None),
+                        description=y[k].get("description", None),
+                        options=opts
+                    )
+                )
             db.session.commit()
         except yaml.YAMLError as exc:
-            app.logger.error("Load config ERROR " + str(exc))
+            app.logger.error(f"Load config ERROR {exc}")
 
 
 @brewinit(order=-1000)
 def init():
-    manager.create_api(Config, methods=['GET', 'POST', 'DELETE', 'PUT'], results_per_page=None,
-    preprocessors={
-    'POST':[pre_post],
-    'PATCH_SINGLE': [pre_post]},
-    postprocessors={
-    'POST':[post_post],
-    'GET_MANY': [post_get_many],
-    'GET_SINGLE':[post_post],
-    'PATCH_SINGLE': [post_post]})
+    manager.create_api(
+        Config,
+        methods=['GET', 'POST', 'DELETE', 'PUT'],
+        results_per_page=None,
+        preprocessors={
+            'POST':[pre_post],
+            'PATCH_SINGLE': [pre_post]
+        },
+        postprocessors={
+            'POST':[post_post],
+            'GET_MANY': [post_get_many],
+            'GET_SINGLE':[post_post],
+            'PATCH_SINGLE': [post_post]
+        }
+    )
     readConfig()
 
 
 @app.route('/api/config/setup', methods=['GET'])
 def config_setup():
     return json.dumps({"setup": app.brewapp_config.get("SETUP", "NO")})
+
 
 @brewinit()
 def initDriver():
@@ -94,7 +111,13 @@ def initDriver():
         'USB': usb_thermometer.USBThermometer()
     }
 
-    app.brewapp_hardware = hardware.get(app.brewapp_config.get("SWITCH_TYPE", "DUMMY"), dummygpio.DummyGPIO())
-    app.brewapp_thermometer = thermometer.get(app.brewapp_config.get("THERMOMETER_TYPE", "DUMMY"), dummy_thermometer.DummyThermometer())
-    app.logger.info(app.brewapp_hardware )
-    app.logger.info(app.brewapp_thermometer )
+    app.brewapp_hardware = hardware.get(
+        app.brewapp_config.get("SWITCH_TYPE", "DUMMY"),
+        dummygpio.DummyGPIO()
+    )
+    app.brewapp_thermometer = thermometer.get(
+        app.brewapp_config.get("THERMOMETER_TYPE", "DUMMY"),
+        dummy_thermometer.DummyThermometer()
+    )
+    app.logger.info(app.brewapp_hardware)
+    app.logger.info(app.brewapp_thermometer)

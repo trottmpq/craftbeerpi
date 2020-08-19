@@ -9,9 +9,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 from brewapp import app, manager, socketio
 from brewapp.base.actor import *
-from brewapp.base.util import *
-
-from .model import *
+from brewapp.base.model import Fermenter, FermenterStep
+from brewapp.base.util import brewinit, brewjob
 
 app.cbp['CURRENT_TASK'] = {}
 app.cbp['FERMENTERS'] = {}
@@ -28,7 +27,6 @@ def load():
 
     app.logger.info("CURRENT_TASK")
     app.logger.info(app.cbp['CURRENT_TASK'])
-
 
 
 def post_post(result, **kw):
@@ -49,10 +47,24 @@ def reload_fermenter(id):
     socketio.emit('fermenter_update', d, namespace='/brew')
 
 
+manager.create_api(
+    Fermenter,
+    methods=['GET', 'POST', 'PUT', 'DELETE'],
+    results_per_page=None,
+    postprocessors={
+        'PUT_SINGLE': [post_patch],
+        'POST': [post_post]
+    }
+)
 
-
-manager.create_api(Fermenter, methods=['GET', 'POST', 'PUT', 'DELETE'],  results_per_page=None, postprocessors={ 'PUT_SINGLE': [post_patch], 'POST': [post_post]})
-manager.create_api(FermenterStep, methods=['GET', 'POST', 'PUT', 'DELETE'], results_per_page=None, postprocessors={'PUT_SINGLE': [post_patch]})
+manager.create_api(
+    FermenterStep,
+    methods=['GET', 'POST', 'PUT', 'DELETE'],
+    results_per_page=None,
+    postprocessors={
+        'PUT_SINGLE': [post_patch]
+    }
+)
 
 @app.route('/api/fermenter/step/order', methods=['POST'])
 def fermentation_order_steps():
@@ -64,30 +76,32 @@ def fermentation_order_steps():
 
     return ('', 204)
 
+
 @app.route('/api/fermenter/<id>/next', methods=['POST'])
 def next(id):
-
     active = FermenterStep.query.filter_by(fermenter_id=int(id), state='A').first()
     inactive = FermenterStep.query.filter_by(fermenter_id=int(id), state='I').order_by(FermenterStep.order).first()
     if active is not None:
         active.state = "D"
         active.end = datetime.datetime.utcnow()
+
     if inactive is not None:
         setTargetTemp(int(id), inactive.temp)
         inactive.start = datetime.datetime.utcnow()
         inactive.state = "A"
         app.cbp['CURRENT_TASK'][int(id)]  = to_dict(inactive)
         temp = app.brewapp_thermometer_last[app.cbp['FERMENTERS'][int(id)]["sensorid"]]
-
         if temp >= inactive.temp:
             app.cbp['CURRENT_TASK'][int(id)]["direction"] = "C"
         else:
             app.cbp['CURRENT_TASK'][int(id)]["direction"] = "H"
     else:
         app.cbp['CURRENT_TASK'].pop(int(id), None)
+
     db.session.commit()
     reload_fermenter(int(id))
     return ('', 204)
+
 
 @app.route('/api/fermenter/<id>/start', methods=['POST'])
 def start(id):
@@ -100,8 +114,8 @@ def stop(id):
     db.session.commit()
     app.cbp['CURRENT_TASK'].pop(int(id), None)
     reload_fermenter(int(id))
-
     return "OK"
+
 
 @app.route('/reset')
 def reset():
@@ -109,6 +123,7 @@ def reset():
     db.session.commit()
     app.cbp['CURRENT_TASK'] = None
     return ('', 204)
+
 
 @app.route('/api/fermenter/<id>/targettemp', methods=['POST'])
 def setTargetTempFermenter(id):
@@ -131,11 +146,10 @@ def setTargetTemp(id, temp):
 def fermenter_state():
     return json.dumps(app.brewapp_automatic_state)
 
+
 def hystresis(id):
     while app.brewapp_automatic_state["F" + id]:
-
         fermenter = app.cbp['FERMENTERS'][int(id)]
-
 
         if type(fermenter["sensorid"]) is not int:
             socketio.emit('message', {"headline": "NO_TERMOMETER", "message": "NO_THERMOMETER_DEFINED"}, namespace='/brew')
@@ -152,7 +166,6 @@ def hystresis(id):
 
         heater_id = fermenter["heaterid"] if type(fermenter["heaterid"]) is int else None
         cooler_id = fermenter["coolerid"] if type(fermenter["coolerid"]) is int else None
-
 
         if heater_id is not None:
             if temp + heater_min < target_temp:
@@ -174,6 +187,7 @@ def hystresis(id):
 
     if type(fermenter["heaterid"]) is int:
         switchOff(fermenter["heaterid"])
+
     if type(fermenter["coolerid"]) is int:
         switchOff(fermenter["coolerid"])
 
@@ -190,7 +204,6 @@ def fermenter_automatic(id):
     return ('', 204)
 
 
-
 @brewjob(key="fermenter", interval=60)
 def fermenterjob():
     for id in app.brewapp_fermenters:
@@ -198,6 +211,7 @@ def fermenterjob():
         temp = app.brewapp_thermometer_last[fermenter["sensorid"]]
         timestamp = int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds()) * 1000
         writeTempToFile("F_" + str(fermenter["id"]), timestamp, temp, fermenter["target_temp"])
+
 
 @brewjob(key="fermenter_control", interval=0.1)
 def step_control():
@@ -215,13 +229,12 @@ def step_control():
                     start_timer(step.get("id"), i)
 
         if (step.get("timer_start") != None):
-
             end = step.get("endunix") + step.get("days") * 86400  + step.get("hours") * 3600 + step.get("minutes") * 60
             now = int((datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).total_seconds())
-
             if end < now:
                 app.logger.info("Next Step")
                 next(step["fermenter_id"])
+
 
 def start_timer(stepid, fermenter_id):
     app.logger.info("Start Timer")
@@ -235,8 +248,6 @@ def start_timer(stepid, fermenter_id):
 
 
 ### Temp Logging
-
-
 @brewjob(key="fermenter", interval=60)
 def fermenterjob():
     for id in app.cbp['FERMENTERS']:

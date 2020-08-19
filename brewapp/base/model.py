@@ -2,7 +2,6 @@ from brewapp import db
 
 
 class Step(db.Model):
-
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     order = db.Column(db.Integer())
     temp = db.Column(db.Float())
@@ -25,13 +24,19 @@ class Step(db.Model):
 class RecipeBooks(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(80))
-    steps = db.relationship('RecipeBookSteps', backref='RecipeBooks', lazy='dynamic', cascade="all, delete-orphan")
+    steps = db.relationship(
+        'RecipeBookSteps',
+        backref='RecipeBooks',
+        lazy='dynamic',
+        cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return self.name
 
     def __unicode__(self):
         return self.name
+
 
 class RecipeBookSteps(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +72,7 @@ class Kettle(db.Model):
     def __unicode__(self):
         return self.name
 
+
 class Hardware(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
@@ -84,6 +90,7 @@ class Hardware(db.Model):
     def __unicode__(self):
         return self.name
 
+
 class Hydrometer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
@@ -97,6 +104,7 @@ class Hydrometer(db.Model):
 
     def decodeJson(self, json):
         self.name = json.get("name")
+
 
 class Config(db.Model):
     name = db.Column(db.String(50), primary_key=True)
@@ -125,13 +133,20 @@ class Fermenter(db.Model):
     cooleroffset_min = db.Column(db.Float())
     cooleroffset_max = db.Column(db.Float())
     target_temp = db.Column(db.Integer())
-    steps = db.relationship('FermenterStep', backref='Fermenter', lazy='joined', cascade="all, delete-orphan", order_by="FermenterStep.order")
+    steps = db.relationship(
+        'FermenterStep',
+        backref='Fermenter',
+        lazy='joined',
+        cascade="all, delete-orphan",
+        order_by="FermenterStep.order"
+    )
 
     def __repr__(self):
         return self.name
 
     def __unicode__(self):
         return self.name
+
 
 class FermenterStep(db.Model):
     id = db.Column(db.Integer, primary_key=True)

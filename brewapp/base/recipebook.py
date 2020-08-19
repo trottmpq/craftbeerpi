@@ -2,9 +2,8 @@ from flask import Response, request
 from flask_restless.helpers import to_dict
 
 from brewapp import app, manager
-
-from .model import *
-from .util import *
+from brewapp.base.model import RecipeBooks, RecipeBookSteps
+from brewapp.base.util import brewinit
 
 
 @brewinit()

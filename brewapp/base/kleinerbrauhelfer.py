@@ -10,17 +10,18 @@ from werkzeug.utils import secure_filename
 # from arrayviews import base
 from brewapp import app, manager, socketio
 
-from . import config, model
-from .buzzer import nextStepBeep, resetBeep, timerBeep
-from .model import *
-from .util import *
-from .views import base
+# from . import config, model
+from brewapp.base.buzzer import nextStepBeep, resetBeep, timerBeep
+from brewapp.base.model import Config, Step
+from brewapp.base.util import *
+from brewapp.base.views import base
 
 ALLOWED_EXTENSIONS = set(['sqlite'])
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
 
 @app.route('/kbupload', methods=['POST'])
 def upload_file():
@@ -35,11 +36,12 @@ def upload_file():
     except Exception as e:
         return str(e)
 
+
 @base.route('/kb', methods=['GET'])
 def getBrews():
     conn = None
     try:
-        conn = sqlite3.connect(app.config['UPLOAD_FOLDER']+'/kb_daten.sqlite')
+        conn = sqlite3.connect(f"{app.config['UPLOAD_FOLDER']}/kb_daten.sqlite")
         c = conn.cursor()
         c.execute('SELECT ID, Sudname, BierWurdeGebraut FROM Sud')
         data = c.fetchall()
@@ -49,14 +51,14 @@ def getBrews():
         return json.dumps(result)
     except Exception as e:
         app.logger.error("Read Kleiner Brauhelfer Data failed: " + str(e))
-        return ('',500)
+        return ('', 500)
     finally:
         if conn:
             conn.close()
 
 @base.route('/kb/select/<id>', methods=['POST'])
 def upload_file(id):
-    data =request.get_json()
+    data = request.get_json()
     conn = None
     try:
         ## Clear all steps

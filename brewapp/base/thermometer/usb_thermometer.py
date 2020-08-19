@@ -1,9 +1,10 @@
 import os
-from subprocess import Popen, PIPE, call
+from decimal import ROUND_HALF_UP, Decimal
 from random import randint, uniform
+from subprocess import PIPE, Popen, call
+
 from brewapp import app
-from decimal import Decimal, ROUND_HALF_UP
-from subprocess import call
+
 
 class USBThermometer(object):
     def init(self):

@@ -3,23 +3,22 @@ import json
 from flask import request
 
 from brewapp import app
+from brewapp.base.actor import initHardware
 from brewapp.base.devices import *
-from brewapp.base.stats import *
+from brewapp.base.kettle import initKettle
+# from brewapp.base.stats import *
 from brewapp.base.thermometer import *
-
-from .actor import initHardware
-from .kettle import initKettle
-from .views import base
+from brewapp.base.views import base
 
 
 @base.route('/setup')
 def setup():
     return base.send_static_file("setup.html");
 
+
 @app.route('/api/setup/kettle', methods=['POST'])
 def setKettle():
-    data =request.get_json()
-
+    data = request.get_json()
 
     Hardware.query.delete()
     Kettle.query.delete()
@@ -29,7 +28,16 @@ def setKettle():
         db.session.add(ks)
 
     for k in data["kettle"]:
-        ks = Kettle(name=k.get("name", "Non-Name"), target_temp=0, automatic="null", sensorid=k.get("sensorid", None), agitator=k.get("agitator", None), heater=k.get("heater", None), diameter=50, height=50)
+        ks = Kettle(
+            name=k.get("name", "Non-Name"),
+            target_temp=0,
+            automatic="null",
+            sensorid=k.get("sensorid", None),
+            agitator=k.get("agitator", None),
+            heater=k.get("heater", None),
+            diameter=50,
+            height=50
+        )
         db.session.add(ks)
     db.session.commit()
 
@@ -37,8 +45,9 @@ def setKettle():
     setConfigParameter("SETUP", "No");
     initKettle()
     initHardware(True)
-    sendStats()
+    # sendStats()
     return ('', 204)
+
 
 @app.route('/api/setup/thermometer', methods=['POST'])
 def setThermometer():
@@ -50,6 +59,7 @@ def setThermometer():
     app.brewapp_thermometer = thermometer.get(data["type"], dummy_thermometer.DummyThermometer())
     setConfigParameter("THERMOMETER_TYPE",data["type"] )
     return json.dumps(app.brewapp_thermometer.getSensors())
+
 
 @app.route('/api/setup/hardware', methods=['POST'])
 def setHardware():
@@ -69,7 +79,7 @@ def setHardware():
 def setConfigParameter(name, value):
     config = Config.query.get(name);
 
-    if(config == None):
+    if not config:
         config = Config()
         config.name = name
         config.value = value
