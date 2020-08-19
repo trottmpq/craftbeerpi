@@ -1,8 +1,8 @@
 
-import util
-from model import *
 from brewapp import app
 
+from . import util
+from .model import *
 
 
 def getserial():

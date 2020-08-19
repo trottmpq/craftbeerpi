@@ -1,10 +1,11 @@
-import os
-import StringIO
 import csv
 import datetime
+import os
 from datetime import date
+from io import StringIO
 
-from flask import make_response, send_from_directory, request
+from flask import make_response, request, send_from_directory
+
 from brewapp.base.actor import *
 
 app.brewapp_thermometers = {}
@@ -121,5 +122,3 @@ def delete_temp_file(type, id):
     delete_file("./log/"+type + '_' + str(id) +".templog")
 
     return ('', 204)
-
-

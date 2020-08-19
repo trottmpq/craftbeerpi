@@ -1,9 +1,10 @@
-from brewapp import app
-from views import base
-from util import *
 import time
-from thread import start_new_thread
 
+from _thread import start_new_thread
+from brewapp import app
+
+from .util import *
+from .views import base
 
 try:
     import RPi.GPIO as GPIO
@@ -68,6 +69,3 @@ def playSound(melodie):
     except Exception as e:
 
         app.logger.error("BUZZER ERROR " + str(e))
-
-
-

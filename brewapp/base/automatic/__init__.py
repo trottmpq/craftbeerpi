@@ -1,11 +1,3 @@
-import automaticlogic
-import pid
-import overshoot
-import fermentation
-import pump
-import overshoot_advanced
-import hyteresis
-import hendipid
-import hendipowerctrl
-import pid_arduino
-import pid_autotune
+from . import (automaticlogic, fermentation, hendipid, hendipowerctrl,
+               hyteresis, overshoot, overshoot_advanced, pid, pid_arduino,
+               pid_autotune, pump)

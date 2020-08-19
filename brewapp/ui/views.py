@@ -1,12 +1,12 @@
-from flask import Blueprint, render_template, jsonify, request
-from brewapp.base.model import *
+from datetime import datetime
+from functools import update_wrapper, wraps
+
+from flask import Blueprint, jsonify, make_response, render_template, request
+
 from brewapp import app, socketio
+from brewapp.base.model import *
 
 ui = Blueprint('ui', __name__, template_folder='templates', static_folder='static')
-
-from flask import make_response
-from functools import wraps, update_wrapper
-from datetime import datetime
 
 
 def nocache(view):
@@ -33,11 +33,3 @@ def index():
         app.logger.info("SHOW INDEX HTML")
         return ui.send_static_file("index.html")
     '''
-
-
-
-
-
-
-
-

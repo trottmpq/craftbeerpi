@@ -1,19 +1,20 @@
-import config
-import model
-from brewapp import manager
-from model import *
-from util import *
-from views import base
-from brewapp import app, socketio
-import time
-from flask import request
-import os
-from werkzeug import secure_filename
-from views import base
-import sqlite3
-from buzzer import nextStepBeep, timerBeep, resetBeep
-from flask_restless.helpers import to_dict
 import json
+import os
+import sqlite3
+import time
+
+from flask import request
+from flask_restless.helpers import to_dict
+from werkzeug.utils import secure_filename
+
+# from arrayviews import base
+from brewapp import app, manager, socketio
+
+from . import config, model
+from .buzzer import nextStepBeep, resetBeep, timerBeep
+from .model import *
+from .util import *
+from .views import base
 
 ALLOWED_EXTENSIONS = set(['sqlite'])
 

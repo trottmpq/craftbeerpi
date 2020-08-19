@@ -1,13 +1,15 @@
-from brewapp import app, socketio, db
-import time
-from thread import start_new_thread
-from brewapp.base.util import *
-from brewapp.base.model import Config
-from flask import Blueprint, render_template, jsonify, request
 import json
-from brewapp.base.model import *
+import time
+
+from flask import Blueprint, jsonify, render_template, request
+
+from _thread import start_new_thread
+from brewapp import app, db, socketio
 from brewapp.base.actor import *
-from brewapp import app, socketio
+from brewapp.base.model import *
+from brewapp.base.model import Config
+from brewapp.base.util import *
+
 
 class Automatic(object):
 

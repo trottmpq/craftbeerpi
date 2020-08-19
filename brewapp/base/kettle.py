@@ -1,9 +1,11 @@
-from util import *
-from model import *
-from brewapp import app, socketio
-from brewapp import manager
-from brewapp.base.automatic.automaticlogic import *
 from flask import send_from_directory
+
+from brewapp import app, manager, socketio
+from brewapp.base.automatic.automaticlogic import *
+
+from .model import *
+from .util import *
+
 
 ## Returns the all current kettle configs
 @app.route('/api/kettle/state', methods=['GET'])

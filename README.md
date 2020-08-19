@@ -1,14 +1,12 @@
 # CraftBeerPI v2.2
+
 The Raspberry PI base Home Brewing Software
 
 Website: www.CraftBeerPI.com
 
-
 Facebook: www.facebook.com/craftbeerpi
 
-
 Facebook User Group: www.facebook.com/groups/craftbeerpi/
-
 
 ## Features
 
@@ -35,7 +33,6 @@ You will find lots of pictures of different setup on the CraftBeerPi Facebook Pa
 
 CraftBeerPi is a free & open source project. If you like to support the project I happy about a donation:
 
-
 [![Donate](https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2X9KR98KJ8YZQ)
 
 ## Support & Communities
@@ -44,30 +41,30 @@ The Community of CraftBeerPi is quite active.
 
 Facebook:
 
-http://facebook.com/craftbeerpi
+<http://facebook.com/craftbeerpi>
 
 German Forum:
 
-http://hobbybrauer.de/forum/viewtopic.php?f=58&t=3959
+<http://hobbybrauer.de/forum/viewtopic.php?f=58&t=3959>
 
 Australian Forum:
 
-http://aussiehomebrewer.com/topic/90757-craftbeerpi-brew-controller/
+<http://aussiehomebrewer.com/topic/90757-craftbeerpi-brew-controller/>
 
 US Forum:
 
-http://www.homebrewtalk.com/showthread.php?t=569497
+<http://www.homebrewtalk.com/showthread.php?t=569497>
 
 Canadian Forum:
 
-https://www.canadianhomebrewers.com/viewtopic.php?f=12&t=4011&sid=d58dfec3f5959858f4ed7f2f3d3404d7
+<https://www.canadianhomebrewers.com/viewtopic.php?f=12&t=4011&sid=d58dfec3f5959858f4ed7f2f3d3404d7>
 
 Norwegian Forum
 
-https://forum.norbrygg.no/threads/craftbeerpi-styrings-software-for-raspberry-pi.33478/
+<https://forum.norbrygg.no/threads/craftbeerpi-styrings-software-for-raspberry-pi.33478/>
 
 Brazilian Forum
-http://www.homebrewtalk.com.br/showthread.php?t=408096
+<http://www.homebrewtalk.com.br/showthread.php?t=408096>
 
 ## Screenshots
 
@@ -79,10 +76,9 @@ http://www.homebrewtalk.com.br/showthread.php?t=408096
 
 Here you will find the guide to install Raspbian
 
-https://www.raspberrypi.org/help/noobs-setup/
+<https://www.raspberrypi.org/help/noobs-setup/>
 
 Please select Raspbina as operating system.
-
 
 ### CraftBeer PI Installation
 
@@ -92,14 +88,17 @@ Watch the installation video or read the installation steps below
 
 Clone CraftBeerPI from GitHub.
 Open the shell on your Raspberry PI and type the following command.
-```
+
+``` bash
 git clone https://github.com/Manuel83/craftbeerpi.git
 ```
+
 ### Setup Script
 
 After cloning the program to your Raspberry PI you just have to run the install.sh script.
 The script will guide you through the installation process.
-```
+
+``` bash
 sudo ./install.sh
 ```
 
@@ -110,15 +109,17 @@ If you have selected this at the first installation just run the installation ag
 select 'y' when you are ask if CraftBeerPI should start after boot.
 
 #### Start the Server manually
-```
+
+``` bash
 sudo python runserver.py
 ```
 
-The App is now available under:  http://<server_id>:5000
+The App is now available under:  <http://server_id:5000>
 
 ## Manual
 
 ### Kleiner Brauhelfer Import
+
 To import the database from "Kleiner Brauhelfer" select "Steps".
 There you will find a button "Import Kleiner Brauhelfer". Upload the kb_daten.sqlite of
 Kleiner Brauhelfer.
@@ -145,7 +146,6 @@ After this you will asked for the MashTun and the Boil kettle of the brew.
 * Breadboard SYB-46 (Pollin.de, Conrad.de, Reichelt.de)
 * Raspberry Pi (Model A+, 2 Model B) + Power Cable + SDCard (Pollin.de, Conrad.de, Reichelt.de)
 
-
 ![ScreenShot](https://raw.githubusercontent.com/Manuel83/craftbeerpi/master/docs/images/Hardwaresetup.png)
 ![ScreenShot](https://raw.githubusercontent.com/Manuel83/craftbeerpi/master/docs/images/Hardwaresetup2.png)
 
@@ -160,33 +160,32 @@ The 1wire device must send data in through port LCD-D2.
 
 GPIO pin names can be found at [https://github.com/xtacocorex/CHIP_IO](https://github.com/xtacocorex/CHIP_IO)
 
-
 ## Start CraftBeerPI in Kiosk Mode
 
 The Kiosk Mode requires that CraftBeerPI is start at boot.
 Make sure that SSH is still enabled otherwise its not possible remove this kiosk mode.
 
-
-```
+``` bash
 sudo raspi-config
 ```
 
 Change your boot to desktop environment. This will start-up the GUI instead of the CLI and automatically will login to user 'pi'.
 
 Install Chromium Browser
-```
+
+``` bash
 sudo apt-get install chromium
 ```
 
 Change startup Config
 
-```
+``` bash
 sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
 ```
 
 Change the file that it looks like this
 
-```
+``` text
 @lxpanel --profile LXDE
 @pcmanfm --desktop --profile LXDE
 @xset s off
@@ -198,7 +197,7 @@ Change the file that it looks like this
 
 Reboot the Raspberry PI
 
-```
+``` bash
 sudo reboot
 ```
 

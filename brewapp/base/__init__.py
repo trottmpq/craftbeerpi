@@ -1,21 +1,21 @@
-import config
-import model
-from brewapp import manager
-from util import brewinit
-from model import *
-import kettle
-import step
-import recipebook
-import kleinerbrauhelfer
-import automatic
-import actor
-import buzzer
-import setup
-import stats
-import system
-import thermo
-import fermenter
-import hydrometer
-import securtiy
-import beerxml
-import admin
+from . import actor
+from . import admin
+from . import automatic
+from . import beerxml
+from . import buzzer
+from . import config
+from . import fermenter
+from . import hydrometer
+from . import kettle
+from . import kleinerbrauhelfer
+from . import recipebook
+from . import securtiy
+from . import setup
+from . import stats
+from . import step
+from . import system
+from . import thermo
+from . import model
+from .. import manager
+from .model import *
+from .util import brewinit

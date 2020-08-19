@@ -1,10 +1,13 @@
-import os
-import StringIO
 import csv
 import datetime
-from brewapp import app, socketio, manager
-from flask import make_response, send_from_directory, request
+import os
+from io import StringIO
+
+from flask import make_response, request, send_from_directory
+
+from brewapp import app, manager, socketio
 from brewapp.base.actor import *
+
 
 @app.route('/api/hydrometer/temps', methods=['GET'])
 def getHydrometerTemps():

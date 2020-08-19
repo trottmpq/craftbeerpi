@@ -1,8 +1,8 @@
 import time
-from thread import start_new_thread
+from _thread import start_new_thread
 
 from brewapp import app
-from views import base
+from .views import base
 
 
 ## Restart Endpoint

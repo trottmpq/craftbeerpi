@@ -1,14 +1,15 @@
+import json
 import xml.etree.ElementTree
 
+from flask import request
+from werkzeug.utils import secure_filename
+
+from brewapp import app, socketio
 from brewapp.base.model import *
-from werkzeug import secure_filename
 from brewapp.base.util import *
 from brewapp.base.views import base
-from brewapp import app, socketio
-from flask import request
 
-import json
-print "HALLO"
+print("HALLO")
 ALLOWED_EXTENSIONS = set(['xml'])
 BEER_XML_FILE = "./upload/recipes.xml"
 
@@ -88,7 +89,7 @@ def selectFromBeerXML(id):
         db.session.commit()
         order = 0
         stesps = getSteps(int(id))
-        print stesps
+        print(stesps)
         for s in getSteps(int(id)):
             temp = float(format(float(s.get("temp", 0.00)), '.2f'))
             s = newStep("MashIn", order, 'M' if order == 0 else 'A', "I", temp, s.get("timer", 0), data['mashtun'])
@@ -111,8 +112,7 @@ def selectFromBeerXML(id):
 
     except Exception as e:
         app.logger.error("Select BeerXML Data failed: " + str(e))
-        print e
+        print(e)
         return ('',500)
 
     return ('',204)
-

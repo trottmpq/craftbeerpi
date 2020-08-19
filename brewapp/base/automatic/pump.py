@@ -1,6 +1,9 @@
 import time
-from automaticlogic import *
+
 from brewapp import app, socketio
+
+from .automaticlogic import *
+
 
 class PID(object):
     ek_1 = 0.0
@@ -86,7 +89,7 @@ class PumpLogic(Automatic):
             pumpPause = pumpPause      
         ## Current Temp is below Target Temp ... switch heater and pump on
             if(currentTemp < targetTemp and currentTemp < pumpSafety):
-              print self.config["PumpGPIO"]
+              print(self.config["PumpGPIO"])
               switchOff(self.config["PumpGPIO"])
               self.switchHeaterON()
               socketio.sleep(heating_time)
@@ -100,20 +103,20 @@ class PumpLogic(Automatic):
                  targetTemp = self.getTargetTemp()
                  if(currentTemp < targetTemp): break
                  socketio.sleep(1)
-              print self.config["PumpGPIO"]
+              print(self.config["PumpGPIO"])
               switchOff(self.config["PumpGPIO"])
         
               for i in range(pumpPause):
                  targetTemp = self.getTargetTemp()
                  if(currentTemp < targetTemp): break
                  socketio.sleep(1)
-              print self.config["PumpGPIO"]
+              print(self.config["PumpGPIO"])
               switchOn(self.config["PumpGPIO"])
          
 ##         self.switchHeaterOFF()
         ## Current Temp is above Pump safety temp ... switch pump off                        
             elif(currentTemp < targetTemp and currentTemp > pumpSafety):
-                print self.config["PumpGPIO"]
+                print(self.config["PumpGPIO"])
                 switchOn(self.config["PumpGPIO"])
                 self.switchHeaterON()
                 socketio.sleep(heating_time)

@@ -1,13 +1,15 @@
+import json
+
 from flask import request
+
+from brewapp import app
 from brewapp.base.devices import *
 from brewapp.base.stats import *
 from brewapp.base.thermometer import *
 
-from actor import initHardware
-from kettle import initKettle
-from views import base
-from brewapp import app
-import json
+from .actor import initHardware
+from .kettle import initKettle
+from .views import base
 
 
 @base.route('/setup')

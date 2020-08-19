@@ -1,18 +1,23 @@
-from util import *
-from model import *
-from brewapp import app, socketio, manager
+import json
+
 import yaml
 
-import json
+from brewapp import app, manager, socketio
+from brewapp.base.devices import *
+from brewapp.base.thermometer import *
+
+from .model import *
+from .util import *
+
 
 def pre_post(data, **kw):
 
-    if data["type"] is "json":
+    if data["type"] == "json":
         data["value"] = json.dumps(data["value"])
 
 
 def post_post(result, **kw):
-    if result["type"] is "json":
+    if result["type"] == "json":
         result["value"] = json.loads(result["value"])
     readConfig()
     socketio.emit('config', app.brewapp_config, namespace='/brew')
@@ -20,7 +25,7 @@ def post_post(result, **kw):
 
 def post_get_many(result, **kw):
     for o in result["objects"]:
-        if o["type"] is "json":
+        if o["type"] == "json":
             o["value"] = json.loads(o["value"])
 
     result["objects"] = sorted(result["objects"], key=lambda k: k['name'])
@@ -63,8 +68,6 @@ def init():
     'PATCH_SINGLE': [post_post]})
     readConfig()
 
-from brewapp.base.devices import *
-from brewapp.base.thermometer import *
 
 @app.route('/api/config/setup', methods=['GET'])
 def config_setup():

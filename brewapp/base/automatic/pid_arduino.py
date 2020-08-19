@@ -1,7 +1,9 @@
-import time
 import logging
+import time
+
 from brewapp import app, socketio
-from automaticlogic import *
+
+from .automaticlogic import *
 
 
 @brewautomatic()

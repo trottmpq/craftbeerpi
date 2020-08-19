@@ -1,5 +1,6 @@
 import time
-from automaticlogic import *
+
+from .automaticlogic import *
 
 try:
     import RPi.GPIO as GPIO

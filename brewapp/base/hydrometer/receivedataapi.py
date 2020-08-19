@@ -1,11 +1,14 @@
-import os
-import StringIO
 import csv
 import datetime
-from brewapp import app, socketio, manager
-from flask import make_response, send_from_directory, request
-from brewapp.base.actor import *
 import math
+import os
+from io import StringIO
+
+from flask import make_response, request, send_from_directory
+
+from brewapp import app, manager, socketio
+from brewapp.base.actor import *
+
 
 def getOrNewHydrometerId(name):
     row = Hydrometer.query.filter_by(name=name).first()
@@ -54,4 +57,3 @@ def receive_spindle_data():
 
     socketio.emit('hydrometer_update', app.brewapp_hydrometer_cfg, namespace='/brew')
     return ('', 204)
-

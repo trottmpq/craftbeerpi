@@ -6,7 +6,6 @@ from decimal import Decimal, ROUND_HALF_UP
 from subprocess import call
 
 class USBThermometer(object):
-
     def init(self):
         call("/usr/bin/owfs")
         pass

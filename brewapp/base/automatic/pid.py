@@ -1,7 +1,9 @@
 import time
+
 from brewapp import app, socketio
 
-from automaticlogic import *
+from .automaticlogic import *
+
 
 class PID(object):
     ek_1 = 0.0

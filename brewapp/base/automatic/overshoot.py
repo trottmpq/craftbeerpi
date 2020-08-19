@@ -1,7 +1,10 @@
-from automaticlogic import *
-from brewapp import app, socketio
 import time
+
+from brewapp import app, socketio
 from brewapp.base.util import *
+
+from .automaticlogic import *
+
 
 @brewautomatic()
 class OvershootLogic(Automatic):

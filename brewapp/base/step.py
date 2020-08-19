@@ -1,19 +1,19 @@
-import config
-import model
-from brewapp import manager
-from model import *
-from util import *
-from brewapp import app, socketio
-import time
-from flask import request
 import os
-from werkzeug import secure_filename
-from views import base
 import sqlite3
+import time
 from datetime import datetime
 
-from buzzer import nextStepBeep, timerBeep, resetBeep
+from flask import request
 from flask_restless.helpers import to_dict
+from werkzeug.utils import secure_filename
+
+from brewapp import app, manager, socketio
+
+from . import config, model
+from .buzzer import nextStepBeep, resetBeep, timerBeep
+from .model import *
+from .util import *
+from .views import base
 
 
 @app.route('/api/step/order', methods=['POST'])

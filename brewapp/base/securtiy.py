@@ -1,17 +1,19 @@
-from flask import Flask, abort, redirect, url_for, render_template, request, Response
-from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO, emit
-from thread import start_new_thread
+import inspect
 import logging
-import flask_restless
-from logging.handlers import RotatingFileHandler
-import time
 import os
+import time
+from functools import wraps
+from logging.handlers import RotatingFileHandler
+
+import flask_restless
+from flask import (Flask, Response, abort, redirect, render_template, request,
+                   url_for)
+from flask_socketio import SocketIO, emit
+from flask_sqlalchemy import SQLAlchemy
+
+from _thread import start_new_thread
 from brewapp import app
 
-
-import inspect
-from functools import wraps
 ## SECURTIY
 
 def requires_auth(f):
@@ -38,5 +40,3 @@ def authenticate():
     'Could not verify your access level for that URL.\n'
     'You have to login with proper credentials', 401,
     {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-

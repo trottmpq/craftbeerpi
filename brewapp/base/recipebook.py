@@ -1,10 +1,11 @@
-from brewapp import manager
-from model import *
-from util import *
-from brewapp import app
-from flask import request
+from flask import Response, request
 from flask_restless.helpers import to_dict
-from flask import  Response
+
+from brewapp import app, manager
+
+from .model import *
+from .util import *
+
 
 @brewinit()
 def init():

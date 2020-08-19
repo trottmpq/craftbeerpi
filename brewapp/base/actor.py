@@ -1,9 +1,11 @@
-from util import *
-from model import *
-from brewapp import app, socketio
-from brewapp import manager
-from flask_restless.helpers import to_dict
 import json
+
+from flask_restless.helpers import to_dict
+
+from brewapp import app, manager, socketio
+
+from .model import *
+from .util import *
 
 
 @app.route('/api/hardware/devices', methods=['GET'])

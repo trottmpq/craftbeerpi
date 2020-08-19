@@ -1,11 +1,12 @@
-import time
-import math
-import logging
 import io
-from collections import deque
-from collections import namedtuple
+import logging
+import math
+import time
+from collections import deque, namedtuple
+
 from brewapp import app, socketio
-from automaticlogic import *
+
+from .automaticlogic import *
 
 
 @brewautomatic()
