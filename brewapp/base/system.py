@@ -2,8 +2,8 @@ import threading
 import time
 from subprocess import call
 
-from brewapp import app
-from brewapp.base.views import base
+from .. import app
+from .views import base
 
 # from _thread import start_new_thread
 ## Restart Endpoint

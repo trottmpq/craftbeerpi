@@ -1,8 +1,8 @@
 from flask import Blueprint
 
-from brewapp import app, socketio
-from brewapp.base.model import *
-from brewapp.base.util import *
+from .. import socketio
+from .model import *
+from .util import *
 
 base = Blueprint(
     'base',

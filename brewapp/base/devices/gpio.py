@@ -1,6 +1,6 @@
-from brewapp import app
-from brewapp.base.actor import ActorBase
-from brewapp.base.model import *
+from ... import app
+from ..actor import ActorBase
+from ..model import *
 
 try:
     import RPi.GPIO as GPIO

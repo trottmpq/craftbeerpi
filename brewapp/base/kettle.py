@@ -1,9 +1,10 @@
+import json
 from flask import request, send_from_directory
 
-from brewapp import app, manager, socketio
-from brewapp.base.automatic.automaticlogic import startAutomatic, stopPID
-from brewapp.base.model import Kettle
-from brewapp.base.util import brewinit, brewjob, writeTempToFile
+from .. import app, manager, socketio
+from .automatic.automaticlogic import startAutomatic, stopPID
+from .model import Kettle
+from .util import brewinit, brewjob, writeTempToFile
 
 
 ## Returns the all current kettle configs

@@ -1,9 +1,12 @@
-from brewapp import app
-from brewapp.base.actor import ActorBase
-from brewapp.base.model import *
+import base64
+
 import httplib2
 from flask import request
-import base64
+
+from ... import app
+from ..actor import ActorBase
+from ..model import *
+
 
 class WifiSocket(ActorBase):
 

@@ -7,8 +7,8 @@ from subprocess import PIPE, Popen, call
 
 from flask import Blueprint, json, render_template, request
 
-from brewapp import app, socketio
-from brewapp.base.model import *
+from ... import app, socketio
+from ..model import *
 
 app.cbp["TEMP"] = {"DummySensor1": 20.99, "DummySensor2": 20, "DummySensor3": 20}
 

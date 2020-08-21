@@ -1,5 +1,5 @@
-from brewapp import app
-from brewapp.base.actor import ActorBase
+from ... import app
+from ..actor import ActorBase
 
 try:
     from CHIP_IO import GPIO

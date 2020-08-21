@@ -16,6 +16,7 @@ from . import step
 from . import system
 # from . import thermo
 from . import model
-from .. import manager
-from .model import *
-from .util import brewinit
+from . import util
+# from .. import manager
+# # from .model import *
+# from .util import brewinit

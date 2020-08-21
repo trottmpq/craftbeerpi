@@ -3,8 +3,8 @@ from io import StringIO
 
 from flask import send_from_directory
 
-from brewapp import app
-from brewapp.base.actor import *
+from .. import app
+from .actor import *
 
 app.brewapp_thermometers = {}
 app.brewapp_thermometers_log = {}

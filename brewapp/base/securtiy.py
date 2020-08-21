@@ -11,7 +11,7 @@ from flask import (Flask, Response, abort, redirect, render_template, request,
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 
-from brewapp import app
+from .. import app
 
 ## SECURTIY
 

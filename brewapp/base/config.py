@@ -2,13 +2,13 @@ import json
 
 import yaml
 
-from brewapp import app, manager, socketio
-from brewapp.base.devices import (chip_gpio, dummygpio, gembird, gpio, gpiosys,
+from .. import app, manager, socketio
+from .devices import (chip_gpio, dummygpio, gembird, gpio, gpiosys,
                                   piface, wifisocket)
-from brewapp.base.model import Config
-from brewapp.base.thermometer import (dummy_thermometer, usb_thermometer,
+from .model import Config
+from .thermometer import (dummy_thermometer, usb_thermometer,
                                       w1_thermometer, w1_thermometer2)
-from brewapp.base.util import brewinit
+from .util import brewinit
 
 
 def pre_post(data, **kw):
@@ -70,7 +70,6 @@ def init():
     manager.create_api(
         Config,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
-        results_per_page=None,
         preprocessors={
             'POST':[pre_post],
             'PATCH_SINGLE': [pre_post]

@@ -4,17 +4,16 @@ import sqlite3
 import time
 
 from flask import request
-from flask_restless.helpers import to_dict
 from werkzeug.utils import secure_filename
 
 # from arrayviews import base
-from brewapp import app, manager, socketio
+from .. import app
 
 # from . import config, model
-from brewapp.base.buzzer import nextStepBeep, resetBeep, timerBeep
-from brewapp.base.model import Config, Step
-from brewapp.base.util import *
-from brewapp.base.views import base
+from .buzzer import nextStepBeep, resetBeep, timerBeep
+from .model import Config, Step
+from .util import *
+from .views import base
 
 ALLOWED_EXTENSIONS = set(['sqlite'])
 

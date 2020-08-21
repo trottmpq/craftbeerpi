@@ -1,8 +1,8 @@
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
-from brewapp import app, db
-from brewapp.base.model import (Config, Fermenter, FermenterStep, Hardware,
+from .. import app, db
+from .model import (Config, Fermenter, FermenterStep, Hardware,
                                 Hydrometer, Kettle, RecipeBooks,
                                 RecipeBookSteps, Step)
 

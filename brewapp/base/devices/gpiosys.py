@@ -1,7 +1,7 @@
 import os
-from brewapp import app
-from brewapp.base.actor import ActorBase
-from brewapp.base.model import *
+from ... import app
+from ..actor import ActorBase
+from ..model import *
 
 GPIO_PATH = '/sys/class/gpio'
 GPIO_MAX  = 200

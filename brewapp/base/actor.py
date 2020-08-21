@@ -1,10 +1,10 @@
 import json
 
-from flask_restless.helpers import to_dict
+# from flask_restless.helpers import to_dict
 
-from brewapp import app, manager, socketio
-from brewapp.base.model import Hardware, Hydrometer
-from brewapp.base.util import brewinit, brewjob, nocache
+from .. import app, manager, socketio
+from .model import Hardware, Hydrometer
+from .util import brewinit, brewjob, nocache, to_dict
 
 
 @app.route('/api/hardware/devices', methods=['GET'])
@@ -50,7 +50,6 @@ def init():
     manager.create_api(
         Hardware,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
-        results_per_page=None,
         preprocessors={
             'POST': [pre_post],
             'PATCH_SINGLE': [pre_post]

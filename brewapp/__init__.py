@@ -1,30 +1,32 @@
 import inspect
 import logging
 import os
-import time
-from logging.handlers import RotatingFileHandler
 from functools import wraps
-import flask_restless
-from flask import Flask, abort, redirect, url_for, render_template, request, Response
-from flask_sqlalchemy import SQLAlchemy
+from logging.handlers import RotatingFileHandler
+
+from flask_restless import APIManager
+from flask import (Flask, Response, abort, redirect, render_template, request,
+                   url_for)
 from flask_socketio import SocketIO, emit
+from flask_sqlalchemy import SQLAlchemy
+
 from _thread import start_new_thread
 
-app = Flask(__name__)
+
+app = Flask(__name__, instance_relative_config=True)
 
 logging.basicConfig(filename='./log/app.log', level=logging.DEBUG)
 
 app.logger.info("##########################################")
 app.logger.info("### NEW STARTUP Version 2.2")
 
+# Configuration ################################################################
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../craftbeerpi.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'craftbeerpi'
 app.config['UPLOAD_FOLDER'] = './upload'
 
-socketio = SocketIO(app)
-
-## Custom Parameter
+# Custom Parameters ############################################################
 app.cbp = {}
 app.brewapp_controller = {}
 app.brewapp_automatic = {}
@@ -51,12 +53,17 @@ app.brewapp_config = {}
 app.brewapp_thermometer_cfg = {}
 app.brewapp_thermometer_log = {}
 app.brewapp_thermometer_last = {}
+app.brewapp_hydrometer_cfg = {}
+app.brewapp_hydrometer_temps = {}
 
-## Create Database
+# Create Socket ################################################################
+socketio = SocketIO(app)
+
+# Create Database ##############################################################
 db = SQLAlchemy(app)
 
-# Create Rest API
-manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
+# Create Rest API ##############################################################
+manager = APIManager(app, flask_sqlalchemy_db=db)
 
 ## Import modules (Flask Blueprints)
 from .base.views import base
@@ -71,13 +78,13 @@ else:
 db.create_all()
 
 ## Register modules (Flask Blueprints)
-app.register_blueprint(base,url_prefix='/base')
-app.register_blueprint(ui,url_prefix='/ui')
+app.register_blueprint(base, url_prefix='/base') # no blueprints in base?
+app.register_blueprint(ui, url_prefix='/ui')
 
-
+# Does not work yet
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if flask.request.method == 'GET':
+    if request.method == 'GET':
         return '''
                <form action='login' method='POST'>
                 <input type='text' name='email' id='email' placeholder='email'></input>
@@ -86,12 +93,12 @@ def login():
                </form>
                '''
 
-    email = flask.request.form['email']
-    if flask.request.form['pw'] == users[email]['pw']:
+    email = request.form['email']
+    if request.form['pw'] == users[email]['pw']:
         user = User()
         user.id = email
         flask_login.login_user(user)
-        return flask.redirect(flask.url_for('protected'))
+        return redirect(flask.url_for('protected'))
 
     return 'Bad login'
 
@@ -100,8 +107,8 @@ def login():
 def index():
     return redirect('ui')
 
-## Invoke Initializers
-app.logger.info("## INITIALIZE DATA")
+# Invoke Initializers
+app.logger.info("# INITIALIZE DATA")
 app.brewapp_init = sorted(app.brewapp_init, key=lambda k: k['order'])
 
 for i in app.brewapp_init:
@@ -112,7 +119,7 @@ for i in app.brewapp_init:
     app.logger.info(f"--> Method: {i.get('function').__name__}() File: {inspect.getfile(i.get('function'))}")
     i.get("function")()
 
-## Start Background Jobs
+# Start Background Jobs
 def job(key, interval, method):
     app.logger.info(f"Start Job: {method.__name__} Interval:{interval} Key:{key}")
     while app.brewapp_jobstate[key]:
@@ -123,8 +130,7 @@ def job(key, interval, method):
             app.logger.error(f"Exception{method.__name__}: {e}")
         socketio.sleep(interval)
 
-app.logger.info("## INITIALIZE JOBS")
-
+app.logger.info("# INITIALIZE JOBS")
 for i in app.brewapp_jobs:
     if(i.get("config_parameter") != None):
         param = app.brewapp_config.get(i.get("config_parameter"), False)

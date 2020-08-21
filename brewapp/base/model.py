@@ -1,4 +1,4 @@
-from brewapp import db
+from .. import db
 
 
 class Step(db.Model):
@@ -107,6 +107,7 @@ class Hydrometer(db.Model):
 
 
 class Config(db.Model):
+    id = db.Column(db.Integer)
     name = db.Column(db.String(50), primary_key=True)
     type = db.Column(db.String(50))
     value = db.Column(db.String(255))

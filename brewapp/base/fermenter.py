@@ -3,14 +3,13 @@ import time
 
 import flask_restless
 from flask import Flask, json, jsonify, request, send_from_directory
-from flask_restless.helpers import to_dict
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 
-from brewapp import app, manager, socketio
-from brewapp.base.actor import *
-from brewapp.base.model import Fermenter, FermenterStep
-from brewapp.base.util import brewinit, brewjob
+from .. import app, manager, socketio
+from .actor import *
+from .model import Fermenter, FermenterStep
+from .util import brewinit, brewjob, to_dict
 
 app.cbp['CURRENT_TASK'] = {}
 app.cbp['FERMENTERS'] = {}
@@ -50,7 +49,6 @@ def reload_fermenter(id):
 manager.create_api(
     Fermenter,
     methods=['GET', 'POST', 'PUT', 'DELETE'],
-    results_per_page=None,
     postprocessors={
         'PUT_SINGLE': [post_patch],
         'POST': [post_post]
@@ -60,7 +58,6 @@ manager.create_api(
 manager.create_api(
     FermenterStep,
     methods=['GET', 'POST', 'PUT', 'DELETE'],
-    results_per_page=None,
     postprocessors={
         'PUT_SINGLE': [post_patch]
     }

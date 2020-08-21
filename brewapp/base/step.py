@@ -4,16 +4,14 @@ import time
 from datetime import datetime
 
 from flask import request
-from flask_restless.helpers import to_dict
 from werkzeug.utils import secure_filename
 
-from brewapp import app, manager, socketio
+from .. import app, manager, socketio
 
-from brewapp.base import config, model
-from brewapp.base.buzzer import nextStepBeep, resetBeep, timerBeep
-from brewapp.base.model import Step
-from brewapp.base.util import *
-from brewapp.base.views import base
+from .buzzer import nextStepBeep, resetBeep, timerBeep
+from .model import Step
+from .util import *
+from .views import base
 
 
 @app.route('/api/step/order', methods=['POST'])
@@ -149,8 +147,7 @@ def init():
     manager.create_api(
         Step,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
-        allow_patch_many=True,
-        results_per_page=None,
+        # allow_patch_many=True,
         postprocessors={
             'GET_MANY': [post_get]
         }

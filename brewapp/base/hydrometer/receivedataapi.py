@@ -6,8 +6,9 @@ from io import StringIO
 
 from flask import make_response, request, send_from_directory
 
-from brewapp import app, manager, socketio
-from brewapp.base.actor import *
+from ... import app, socketio
+from ..actor import *
+from ..model import Hydrometer
 
 
 def getOrNewHydrometerId(name):

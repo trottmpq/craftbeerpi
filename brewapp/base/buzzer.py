@@ -2,8 +2,8 @@
 import threading
 import time
 
-from brewapp import app
-from brewapp.base.util import brewinit
+from .. import app
+from .util import brewinit
 
 try:
     import RPi.GPIO as GPIO

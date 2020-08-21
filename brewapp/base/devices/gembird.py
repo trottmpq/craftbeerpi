@@ -1,6 +1,9 @@
 import subprocess
-from brewapp.base.actor import ActorBase
-from brewapp import app
+
+from ... import app
+from ..actor import ActorBase
+
+
 class GembirdUSB(ActorBase):
 
     def init(self):

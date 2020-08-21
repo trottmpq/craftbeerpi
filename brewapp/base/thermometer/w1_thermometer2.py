@@ -3,8 +3,8 @@ import re
 import sys
 from subprocess import call
 
-from brewapp import app
-from brewapp.base.thermometer.tempfilter import TemperatureFilter
+from ... import app
+from .tempfilter import TemperatureFilter
 
 
 class OneWireThermometer2(object):

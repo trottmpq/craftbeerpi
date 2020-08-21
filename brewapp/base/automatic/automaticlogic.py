@@ -3,12 +3,11 @@ import time
 
 from flask import Blueprint, jsonify, render_template, request
 
-from _thread import start_new_thread
-from brewapp import app, db, socketio
-from brewapp.base.actor import *
-from brewapp.base.model import *
-from brewapp.base.model import Config
-from brewapp.base.util import *
+from ... import app, db, socketio
+from ..actor import *
+from ..model import *
+from ..model import Config
+from ..util import *
 
 
 class Automatic(object):

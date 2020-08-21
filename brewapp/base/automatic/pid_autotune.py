@@ -4,7 +4,7 @@ import math
 import time
 from collections import deque, namedtuple
 
-from brewapp import app, socketio
+from ... import app, socketio
 
 from .automaticlogic import *
 

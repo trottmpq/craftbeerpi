@@ -1,5 +1,6 @@
-from brewapp import app
-from brewapp.base.actor import ActorBase
+from ... import app
+from ..actor import ActorBase
+
 try:
     import pifacedigitalio as piface
     app.logger.info("SETUP PiFace Module Loaded")

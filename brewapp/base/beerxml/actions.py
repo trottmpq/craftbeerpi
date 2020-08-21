@@ -4,12 +4,11 @@ import xml.etree.ElementTree
 from flask import request
 from werkzeug.utils import secure_filename
 
-from brewapp import app, socketio
-from brewapp.base.model import *
-from brewapp.base.util import *
-from brewapp.base.views import base
+from ... import app, socketio
+from ..model import *
+from ..util import *
+from ..views import base
 
-print("HALLO")
 ALLOWED_EXTENSIONS = set(['xml'])
 BEER_XML_FILE = "./upload/recipes.xml"
 

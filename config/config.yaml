@@ -1,5 +1,5 @@
 SETUP:
- value: 'Yes'
+ value: 'No'
  options: ['Yes', 'No']
  description: 'Show Setup dialog?'
 
@@ -17,17 +17,17 @@ UNIT:
  description: 'Temperature Unit'
 
 THERMOMETER_TYPE:
- value: 1WIRE
+ value: 'DUMMY'
  options: ['1WIRE','USB','DUMMY', '1WIRE_V2']
  description: 'Thermometer Type !!!RESTART AFTER CHANGE OF THIS PARAMETER!!!'
 
 SWITCH_TYPE:
- value: GPIO
+ value: 'DUMMY'
  options: ['GPIO','CHIP-GPIO','GPIOSYS','PIFACE','GEMBIRD','WIFISOCKET','DUMMY']
  description: 'Actor Type !!!RESTART AFTER CHANGE OF THIS PARAMETER!!!'
 
 SEND_STATS:
- value: 'True'
+ value: 'False'
  options: ['True', 'False']
  description: 'Sending statistic informaiton to CraftBeerPI. This helps to improve CraftBeerPI in the future'
 
@@ -38,7 +38,7 @@ USE_LCD:
 
 
 BREWERY_NAME:
- value:
+ value: 'AshBrew'
  description: 'Name of your brewery'
 
 USERNAME:

@@ -1,6 +1,6 @@
-from brewapp import app
-from brewapp.base import util
-from brewapp.base.model import Hardware, Kettle
+from .. import app
+from . import util
+from .model import Hardware, Kettle
 
 
 def getserial():

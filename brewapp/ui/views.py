@@ -1,12 +1,17 @@
 from datetime import datetime
 from functools import update_wrapper, wraps
 
-from flask import Blueprint, jsonify, make_response, render_template, request
+from flask import Blueprint, make_response
 
-from brewapp import app, socketio
-from brewapp.base.model import *
+from .. import app, socketio
+from ..base.model import *
 
-ui = Blueprint('ui', __name__, template_folder='templates', static_folder='static')
+ui = Blueprint(
+    'ui',
+    __name__,
+    template_folder='templates',
+    static_folder='static'
+)
 
 
 def nocache(view):
@@ -25,11 +30,11 @@ def nocache(view):
 @nocache
 def index():
     return ui.send_static_file("index.html")
-    '''
-    if app.brewapp_config.get("SETUP", "Yes") == "Yes":
-        app.logger.info("SHOW SETUP HTML")
-        return ui.send_static_file("setup.html")
-    else:
-        app.logger.info("SHOW INDEX HTML")
-        return ui.send_static_file("index.html")
-    '''
+    # '''
+    # if app.brewapp_config.get("SETUP", "Yes") == "Yes":
+    #     app.logger.info("SHOW SETUP HTML")
+    #     return ui.send_static_file("setup.html")
+    # else:
+    #     app.logger.info("SHOW INDEX HTML")
+    #     return ui.send_static_file("index.html")
+    # '''

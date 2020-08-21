@@ -1,8 +1,9 @@
-from automaticlogic import *
-from brewapp import app
 import time
-from brewapp.base.util import *
-from brewapp import app, socketio
+
+from ... import app, socketio
+from ..util import *
+from .automaticlogic import *
+
 
 @brewautomatic()
 class CustomLogic(Automatic):

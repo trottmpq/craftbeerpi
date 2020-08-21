@@ -2,13 +2,14 @@
 
 from flask import Flask
 from brewapp import app, socketio
-from flask_socketio import SocketIO, emit
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_socketio import SocketIO, emit
+# from flask_debugtoolbar import DebugToolbarExtension
 
 
 
 if __name__ == '__main__':
     app.debug = False
-    #toolbar = DebugToolbarExtension(app)
 
+    #toolbar = DebugToolbarExtension(app)
+    # app.run()
     socketio.run(app, host='0.0.0.0')

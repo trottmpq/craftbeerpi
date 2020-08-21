@@ -1,7 +1,7 @@
 import time
 
-from brewapp import app, socketio
-from brewapp.base.util import *
+from ... import app, socketio
+from ..util import *
 
 from .automaticlogic import *
 
