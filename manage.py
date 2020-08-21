@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
+from flask import url_for
 from flask.ext.script import Manager
-from brewapp.base.model import *
-from brewapp import app, db
-from flask import Flask, abort, redirect, url_for, render_template
+
+from brewapp import app
 
 manager = Manager(app)
-
 
 @manager.command
 def dump():
@@ -24,7 +23,7 @@ def dump():
         output.append(line)
         
     for line in sorted(output):
-        print line
+        print (line)
 
 
 if __name__ == "__main__":

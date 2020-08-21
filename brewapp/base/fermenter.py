@@ -6,10 +6,10 @@ from flask import Flask, json, jsonify, request, send_from_directory
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 
-from .. import app, manager, socketio
-from .actor import *
+from .. import app, db, manager, socketio
+from .actor import switchOff, switchOn
 from .model import Fermenter, FermenterStep
-from .util import brewinit, brewjob, to_dict
+from .util import brewinit, brewjob, to_dict, writeTempToFile
 
 app.cbp['CURRENT_TASK'] = {}
 app.cbp['FERMENTERS'] = {}

@@ -1,13 +1,12 @@
-import json
+from flask import request, json
 
-from flask import request
-
-from .. import app
+from .. import app, db
+from .model import Hardware, Kettle, Config
 from .actor import initHardware
-from .devices import *
+from .devices import dummygpio, gpio, gembird, piface, chip_gpio, gpiosys
 from .kettle import initKettle
 # from .stats import *
-from .thermometer import *
+from .thermometer import dummy_thermometer, w1_thermometer
 from .views import base
 
 

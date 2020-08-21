@@ -1,18 +1,16 @@
-import json
 import os
 import sqlite3
 import time
 
-from flask import request
+from flask import request, json
 from werkzeug.utils import secure_filename
 
 # from arrayviews import base
-from .. import app
+from .. import app, db
 
 # from . import config, model
 from .buzzer import nextStepBeep, resetBeep, timerBeep
 from .model import Config, Step
-from .util import *
 from .views import base
 
 ALLOWED_EXTENSIONS = set(['sqlite'])

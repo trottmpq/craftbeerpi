@@ -1,16 +1,11 @@
-import os
-import sqlite3
-import time
 from datetime import datetime
 
 from flask import request
-from werkzeug.utils import secure_filename
 
-from .. import app, manager, socketio
-
+from .. import app, db, manager, socketio
 from .buzzer import nextStepBeep, resetBeep, timerBeep
 from .model import Step
-from .util import *
+from .util import brewinit, brewjob, getAsArray, setTargetTemp, to_dict
 from .views import base
 
 

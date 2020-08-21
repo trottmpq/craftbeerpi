@@ -1,6 +1,4 @@
-import json
-
-# from flask_restless.helpers import to_dict
+from flask import json
 
 from .. import app, manager, socketio
 from .model import Hardware, Hydrometer

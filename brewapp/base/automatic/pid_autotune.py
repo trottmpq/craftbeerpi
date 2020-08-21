@@ -5,8 +5,8 @@ import time
 from collections import deque, namedtuple
 
 from ... import app, socketio
-
-from .automaticlogic import *
+from ..util import brewautomatic
+from .automaticlogic import Automatic, stopPID
 
 
 @brewautomatic()

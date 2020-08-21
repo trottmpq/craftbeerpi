@@ -1,6 +1,4 @@
 import os
-from decimal import ROUND_HALF_UP, Decimal
-from random import randint, uniform
 from subprocess import PIPE, Popen, call
 
 from ... import app

@@ -1,7 +1,6 @@
 import os
 from ... import app
 from ..actor import ActorBase
-from ..model import *
 
 GPIO_PATH = '/sys/class/gpio'
 GPIO_MAX  = 200

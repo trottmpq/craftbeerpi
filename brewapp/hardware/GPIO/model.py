@@ -1,4 +1,4 @@
-from brewapp import db
+from ... import db
 
 class Config2(db.Model):
     name = db.Column(db.String(50), primary_key=True)

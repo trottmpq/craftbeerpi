@@ -1,6 +1,5 @@
 from ... import app
 from ..actor import ActorBase
-from ..model import *
 
 try:
     import RPi.GPIO as GPIO

@@ -1,6 +1,7 @@
-import time
+from ... import app, socketio
+from ..util import brewautomatic
+from .automaticlogic import Automatic
 
-from .automaticlogic import *
 
 try:
     import RPi.GPIO as GPIO

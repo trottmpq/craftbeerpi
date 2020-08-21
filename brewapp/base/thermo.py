@@ -1,10 +1,9 @@
 import datetime
-from io import StringIO
 
-from flask import send_from_directory
+from flask import json, send_from_directory
 
-from .. import app
-from .actor import *
+from .. import app, socketio
+from .util import read_temp_log, read_hydrometer_log, delete_file
 
 app.brewapp_thermometers = {}
 app.brewapp_thermometers_log = {}

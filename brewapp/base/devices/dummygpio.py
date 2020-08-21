@@ -1,6 +1,5 @@
 from ... import app
 from ..actor import ActorBase
-from ..model import *
 
 class DummyGPIO(ActorBase):
 

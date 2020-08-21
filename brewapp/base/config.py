@@ -1,8 +1,8 @@
-import json
+from flask import json
 
 import yaml
 
-from .. import app, manager, socketio
+from .. import app, db, manager, socketio
 from .devices import (chip_gpio, dummygpio, gembird, gpio, gpiosys,
                                   piface, wifisocket)
 from .model import Config

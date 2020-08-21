@@ -1,8 +1,7 @@
 from flask import Blueprint
 
 from .. import socketio
-from .model import *
-from .util import *
+
 
 base = Blueprint(
     'base',

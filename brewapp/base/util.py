@@ -2,12 +2,21 @@ import csv
 import datetime
 import os.path
 import time
+import uuid
 from functools import update_wrapper, wraps
 
 from flask import json, make_response
+from sqlalchemy.exc import NoInspectionAvailable
+from sqlalchemy.ext import hybrid
+from sqlalchemy.ext.associationproxy import AssociationProxy
+from sqlalchemy.inspection import inspect as sqlalchemy_inspect
+from sqlalchemy.orm import ColumnProperty
+from sqlalchemy.orm import RelationshipProperty as RelProperty
+from sqlalchemy.orm.query import Query
 
 from .. import app, db
 
+COLUMN_BLACKLIST = ('_sa_polymorphic_on', )
 
 def getAsArray(obj, order=None):
     if order:
@@ -348,3 +357,33 @@ def to_dict(instance, deep=None, exclude=None, include=None,
                                    include=newinclude,
                                    include_methods=newmethods)
     return result
+
+def is_like_list(instance, relation):
+    """Returns ``True`` if and only if the relation of `instance` whose name is
+    `relation` is list-like.
+    A relation may be like a list if, for example, it is a non-lazy one-to-many
+    relation, or it is a dynamically loaded one-to-many.
+    """
+    if relation in instance._sa_class_manager:
+        return instance._sa_class_manager[relation].property.uselist
+    elif hasattr(instance, relation):
+        attr = getattr(instance._sa_instance_state.class_, relation)
+        if hasattr(attr, 'property'):
+            return attr.property.uselist
+    related_value = getattr(type(instance), relation, None)
+    if isinstance(related_value, AssociationProxy):
+        local_prop = related_value.local_attr.prop
+        if isinstance(local_prop, RelProperty):
+            return local_prop.uselist
+    return False
+
+def is_mapped_class(cls):
+    """Returns ``True`` if and only if the specified SQLAlchemy model class is
+    a mapped class.
+
+    """
+    try:
+        sqlalchemy_inspect(cls)
+        return True
+    except:
+        return False

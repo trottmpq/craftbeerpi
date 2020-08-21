@@ -1,13 +1,10 @@
-import time
-
-from ... import app, socketio
-from ..util import *
-from .automaticlogic import *
+from ... import socketio
+from ..util import brewautomatic
+from .automaticlogic import Automatic
 
 
 @brewautomatic()
 class CustomLogic(Automatic):
-
     # Define config paramter as array of dicts
     configparameter = [{"name" : "PumpGPIO" , "value" : 17}]
 

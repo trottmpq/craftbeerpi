@@ -5,7 +5,6 @@ from flask import request
 
 from ... import app
 from ..actor import ActorBase
-from ..model import *
 
 
 class WifiSocket(ActorBase):

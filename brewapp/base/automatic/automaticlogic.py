@@ -1,17 +1,11 @@
-import json
-import time
+from flask import json
 
-from flask import Blueprint, jsonify, render_template, request
-
-from ... import app, db, socketio
-from ..actor import *
-from ..model import *
-from ..model import Config
-from ..util import *
+from ... import app, socketio
+from ..actor import switchOff, switchOn
+from ..model import Config, Kettle
 
 
 class Automatic(object):
-
     configparameter = None
     config = None
 

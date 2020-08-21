@@ -4,7 +4,6 @@ from functools import update_wrapper, wraps
 from flask import Blueprint, make_response
 
 from .. import app, socketio
-from ..base.model import *
 
 ui = Blueprint(
     'ui',

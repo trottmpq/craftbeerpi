@@ -1,20 +1,14 @@
-import csv
 import datetime
-import math
-import os
-from io import StringIO
 
-from flask import make_response, request, send_from_directory
+from flask import request
 
-from ... import app, socketio
-from ..actor import *
+from ... import app, db, socketio
 from ..model import Hydrometer
+from ..util import to_dict, writeSpindle, brewinit
 
 
 def getOrNewHydrometerId(name):
     row = Hydrometer.query.filter_by(name=name).first()
-
-
     if row is None:
         h = Hydrometer(name=name, tuning="-0.003335787*tilt*tilt+ 0.835971079*tilt-20.57776766")
         db.session.add(h)
@@ -37,7 +31,6 @@ def init():
 ## NEW DATA
 def calc_wort(polynom, tilt):
     ### here the wort needs to be calculated
-
     result =  eval(polynom)
     result = round(result,2)
     return result
@@ -45,8 +38,6 @@ def calc_wort(polynom, tilt):
 
 @app.route('/api/hydrometer/v1/data', methods=['POST'])
 def receive_spindle_data():
-
-
     data = request.get_json()
     id = getOrNewHydrometerId(data["name"])
     wort = calc_wort(app.brewapp_hydrometer_cfg[id]["tuning"], data["angle"])

@@ -1,12 +1,11 @@
-import json
+import os
 import xml.etree.ElementTree
 
-from flask import request
+from flask import request, json
 from werkzeug.utils import secure_filename
 
-from ... import app, socketio
-from ..model import *
-from ..util import *
+from ... import app, socketio, db
+from ..model import Config, Step
 from ..views import base
 
 ALLOWED_EXTENSIONS = set(['xml'])
